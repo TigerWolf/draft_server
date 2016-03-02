@@ -23,15 +23,19 @@ config :draft_server, DraftServer.Endpoint,
 
 # Do not print debug messages in production
 
-config :logger,
-  backends: [{LoggerFileBackend, :error_log},Rollbax.Notifier]
+# config :logger,
+#   backends: [{LoggerFileBackend, :error_log},Rollbax.Notifier]
+#
+# config :logger, :error_log,
+#   path: "log/error.log",
+#   level: :error
 
-config :logger, :error_log,
-  path: "log/error.log",
-  level: :error
 
 config :logger, Rollbax.Notifier,
   level: :error
+
+# config :logger, level: :info
+
 
 # ## SSL Support
 #

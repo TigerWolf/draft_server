@@ -45,6 +45,7 @@ defmodule DraftServer.Mixfile do
       {:exrm, "1.0.2"},
       {:rollbax, "~> 0.5"},
       {:logger_file_backend, "0.0.4"},
+      {:secure_random, "~> 0.2"}, # For Sentinel 
    ]
   end
 
