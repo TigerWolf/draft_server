@@ -32,5 +32,6 @@
   "ranch": {:hex, :ranch, "1.2.1"},
   "relx": {:hex, :relx, "3.18.0"},
   "secure_random": {:hex, :secure_random, "0.2.0"},
+  "sentinel": {:git, "https://github.com/TigerWolf/sentinel.git", "1b05ad719d229cf6f6423823ffa5fd73366eaf2b", [ref: "1b05ad719d229cf6f6423823ffa5fd73366eaf2b"]},
   "ueberauth": {:hex, :ueberauth, "0.2.0"},
   "uuid": {:hex, :uuid, "1.1.3"}}

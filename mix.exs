@@ -39,7 +39,7 @@ defmodule DraftServer.Mixfile do
       {:gettext, "~> 0.9"},
       {:cowboy, "~> 1.0"},
       {:guardian, "~> 0.10.0"},
-      {:sentinel, "~> 0.0.4", path: "~/dev/sentinel"},
+      {:sentinel, "~> 0.0.4", github: "TigerWolf/sentinel", ref: "1b05ad719d229cf6f6423823ffa5fd73366eaf2b"},
       {:exrm, "1.0.2"},
    ]
   end
