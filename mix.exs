@@ -19,7 +19,7 @@ defmodule DraftServer.Mixfile do
   def application do
     [mod: {DraftServer, []},
      applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :sentinel]]
+                    :phoenix_ecto, :postgrex, :guardian, :sentinel]]
   end
 
   # Specifies which paths to compile per environment.
@@ -39,7 +39,7 @@ defmodule DraftServer.Mixfile do
       {:gettext, "~> 0.9"},
       {:cowboy, "~> 1.0"},
       {:guardian, "~> 0.10.0"},
-      {:sentinel, "~> 0.0.4", github: "TigerWolf/sentinel", ref: "1b05ad719d229cf6f6423823ffa5fd73366eaf2b"},
+      {:sentinel, "~> 0.0.4", path: "~/dev/sentinel"},
       {:exrm, "1.0.2"},
    ]
   end
