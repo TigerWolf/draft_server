@@ -12,8 +12,7 @@ config :draft_server, DraftServer.Endpoint,
   secret_key_base: "Dpo+YpjXjXkL/an3R9ChOXOIkxaBPBz127YvTV8KnY1qPC34yklnqf7GZY+s9oDu",
   render_errors: [accepts: ~w(html json)],
   pubsub: [name: DraftServer.PubSub,
-           adapter: Phoenix.PubSub.PG2],
-  server: true
+           adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger
 config :logger, :console,
