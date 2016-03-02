@@ -17,9 +17,21 @@ config :draft_server, DraftServer.Endpoint,
   cache_static_manifest: "priv/static/manifest.json",
   server: true
 
+  config :rollbax,
+    access_token: "0986ff39d4e04f099536b07900347a32",
+    environment: "production"
 
 # Do not print debug messages in production
-config :logger, level: :info
+
+config :logger,
+  backends: [{LoggerFileBackend, :error_log},Rollbax.Notifier]
+
+config :logger, :error_log,
+  path: "log/error.log",
+  level: :error
+
+config :logger, Rollbax.Notifier,
+  level: :error
 
 # ## SSL Support
 #
