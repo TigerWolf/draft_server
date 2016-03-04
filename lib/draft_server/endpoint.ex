@@ -35,5 +35,7 @@ defmodule DraftServer.Endpoint do
     key: "_draft_server_key",
     signing_salt: "jzRHinL0"
 
+  plug CORSPlug    
+
   plug DraftServer.Router
 end

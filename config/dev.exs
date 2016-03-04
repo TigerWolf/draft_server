@@ -24,6 +24,11 @@ config :draft_server, DraftServer.Endpoint,
     ]
   ]
 
+config :rollbax,
+  access_token: "0986ff39d4e04f099536b07900347a32",
+  environment: "development"
+
+
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 
