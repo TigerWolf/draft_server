@@ -6,7 +6,7 @@ defmodule DraftServer.UserController do
 
   plug :scrub_params, "user" when action in [:create, :update]
 
-  plug Guardian.Plug.EnsureAuthenticated, handler: __MODULE__, typ: "token"
+  # plug Guardian.Plug.EnsureAuthenticated, handler: __MODULE__, typ: "token"
 
   def index(conn, _params) do
     users = Repo.all(User)
