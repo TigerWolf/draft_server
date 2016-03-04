@@ -1,0 +1,155 @@
+<html>
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-beta1/jquery.js"></script>
+  <!-- <meta http-equiv="refresh" content="5" > -->
+  <style>
+
+    body{
+      margin: 0;
+      padding: 0;
+    }
+
+
+
+    .content{
+      padding: 20px;
+      -webkit-column-count: 6;
+   -moz-column-count: 6;
+        column-count: 6;
+        -webkit-column-width: 250px;
+     -moz-column-width: 250px;
+          column-width: 250px;
+          /*-webkit-column-rule: 1px dotted #ddd;*/
+   /*-moz-column-rule: 1px dotted #ddd;*/
+        /*column-rule: 1px dotted #ddd;*/
+    }
+
+
+    .draft_box{
+      background: #e5e5e5;
+      width: 225px;
+      box-shadow: 3px 4px 8px 0 #2e4300;
+      /*margin: 20px;*/
+      margin-top: 20px;
+      margin-bottom: 20px;
+      display: inline-block;
+    }
+
+    .draft_box .image{
+      display: inline-block;
+    }
+
+    .draft_box .details{
+      display: inline-block;
+      width: 100px;
+      vertical-align: top;
+    }
+
+    .draft_box .player{
+      margin: 5px;
+      font-weight: bold;
+      display: inline-block;
+    }
+
+    .draft_box .name{
+      margin: 5px;
+      padding: 5px;
+      border: 1px solid;
+      font-weight: bold;
+      display: inline-block;
+    }
+  </style>
+  <script type="text/javascript">
+  "use strict";
+
+  class Player {
+    constructor(id, name, image) {
+      this.id = id;
+      this.name = name;
+      this.image = image;
+    }
+  }
+
+  class User {
+    constructor(id, name, image) {
+      this.id = id;
+      this.name = name;
+      this.image = image;
+    }
+  }
+
+  var players = [];
+  var users = [];
+  var tld = "http://direct.challengecup.club:8080/api/v1/"
+  // var tld = "http://localhost:4000/api/v1/"
+  // var tld = "//api/v1/"
+
+  $(function() {
+    // startRefresh();
+  });
+
+  function startRefresh() {
+    setTimeout(startRefresh,1000);
+    $.get('dashboard', function(data) {
+        $('body').html(data);
+    });
+  }
+
+  $(document).ready(function(){
+
+    $.getJSON( tld + "drafts/players", function( data ) {
+      $.each( data["lists"], function( key, val ) {
+        players.push(new Player(val["player"]["playerId"], val["player"]["givenName"] + " " + val["player"]["surname"], val["player"]["photoURL"]));
+      });
+
+      getUsers();
+      getDrafted();
+    });
+
+
+  });
+
+  function getUsers(){
+    $.getJSON( tld + "the_users", function( data ) {
+      $.each( data["data"], function( key, val ) {
+        users.push(new User(val.id, val.email))
+      });
+    });
+  };
+
+  function getDrafted(){
+    $.getJSON( tld + "drafts", function( data ) {
+      var items = [];
+      $.each( data["data"], function( key, val ) {
+        var found_player = new Player()
+        for (var i = 0; i < players.length; i++) {
+          var player = players[i];
+          if (player.id == val.player_id){
+            found_player = player
+          }
+        }
+
+        var found_user = new User();
+        for (var i = 0; i < users.length; i++) {
+          var user = users[i]
+          if (user.id == val.user_id){
+            found_user = user
+          }
+        }
+        items.push( "<div class='draft_box'><div class='image'><img width='100' src='"+ found_player.image + "'></div><div class='details'><div class='name'>" + found_user.name + "</div> <div class='player'>" + found_player.name + "</div></div></div>" );
+      });
+
+      $( "<div>", {
+        "class": "my-new-list",
+        html: items.join( "" )
+      }).appendTo( ".content" );
+    });
+  };
+  </script>
+
+</head>
+<body>
+  <div class="content">
+  </div>
+</body>
+</html>
