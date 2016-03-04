@@ -20,7 +20,8 @@ defmodule DraftServer.Mixfile do
     [mod: {DraftServer, []},
      applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
                     :phoenix_ecto, :postgrex, :guardian, :sentinel,
-                    :rollbax, :logger_file_backend
+                    :rollbax, :logger_file_backend, :secure_random,
+                    :cors_plug
                    ]]
   end
 
