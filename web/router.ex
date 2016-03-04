@@ -19,7 +19,7 @@ defmodule DraftServer.Router do
   scope "/api/v1", DraftServer do # Api.V1
     pipe_through [:api]
 
-    # resources "/users", UserController
+    get "/the_users", UserController, :index
 
     get "/drafts/players", DraftController, :players
 
