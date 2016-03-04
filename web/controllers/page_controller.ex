@@ -8,6 +8,6 @@ defmodule DraftServer.PageController do
   def dashboard(conn, _params) do
     conn
     |> put_layout(false)
-    |> render "dashboard.html"
+    |> render("dashboard.html")
   end
 end
