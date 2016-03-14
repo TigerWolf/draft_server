@@ -95,8 +95,93 @@ defmodule DraftServer.DraftController do
     |> text("#{current_user}")
   end
 
+  require IEx
+  def players_generator(conn, _params) do
+    raw_players =
+      File.read!("data/players.json")
+      |> Poison.decode!
+
+    # fantasy_players =
+    #   File.read!("data/fantasy.json")
+    #   |> Poison.decode!
+
+    ultimate_positions =
+      CSVLixir.read("data/ultimate.csv") |> Enum.to_list
+
+    lists = raw_players["lists"]
+    players_list = Enum.map(lists, fn x ->
+      player_name = x["player"]["givenName"] <> " " <> x["player"]["surname"]
+      # |> List.first
+      # |> List.first
+#
+      position = Enum.filter(ultimate_positions, fn x -> Enum.at(x, 0) <> " " <> Enum.at(x, 1) == player_name end)
+      |> List.first
+
+      # positions = position
+
+      # IEx.pry
+
+      # if position != nil do
+      postions = case position do
+        nil -> ""
+        _ ->
+          position
+          |> List.delete_at(0) # Remove first name
+          |> List.delete_at(0) # Remove last name
+          |> List.delete_at(0) # Remove team name
+          |> Enum.filter(fn x -> x != "" end)
+      end
+      # end
+
+      # Remove the player names and just get the positions
+
+
+      # positions = List.first(position)["positions"]
+
+      position_descriptions = %{
+        1 => "Defender",
+        2 => "Mid",
+        3 => "Ruck",
+        4 => "Forward"
+      }
+
+      # IO.puts inspect(x["player"]["givenName"])
+      # IO.puts inspect(x["player"]["surname"])
+      # IO.puts inspect(player_id)
+      # IO.puts inspect(positions)
+      # if positions != nil do
+      # fantasy_replaced_positions = Enum.map(positions, fn x ->
+      #
+      #   # position_id = Enum.filter(position_descriptions, fn y -> x == y end)
+      #   position_descriptions[x]
+      #   # IEx.pry
+      #   # String.replace(x, position_id, position_descriptions[position_id])
+      # end)
+    # end
+
+      %{
+      "givenName" => x["player"]["givenName"],
+      "surname" => x["player"]["surname"],
+      "photoURL" => x["player"]["photoURL"],
+      "jumper" => x["player"]["jumper"],
+      "playerId" => x["player"]["playerId"],
+      "teamId" => x["team"]["teamId"],
+      "teamAbbr" => x["team"]["teamAbbr"],
+      "teamName" => x["team"]["teamName"],
+      "teamNickname" => x["team"]["teamNickname"],
+      # "new_player_id" => player_name,
+      "positions" => postions
+
+    } end )
+
+    conn
+    |> put_status(:ok)
+    |> json(players_list)
+  end
+
+
   def dashboard(conn, _params) do
-    
+
   end
 
   def unauthenticated(conn, _params) do
