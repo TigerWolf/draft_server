@@ -7,6 +7,7 @@
   "cors_plug": {:hex, :cors_plug, "1.1.0"},
   "cowboy": {:hex, :cowboy, "1.0.4"},
   "cowlib": {:hex, :cowlib, "1.0.2"},
+  "csvlixir": {:hex, :csvlixir, "2.0.2"},
   "db_connection": {:hex, :db_connection, "0.2.4"},
   "decimal": {:hex, :decimal, "1.1.1"},
   "earmark": {:hex, :earmark, "0.2.1"},

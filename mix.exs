@@ -21,7 +21,7 @@ defmodule DraftServer.Mixfile do
      applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
                     :phoenix_ecto, :postgrex, :guardian, :sentinel,
                     :rollbax, :logger_file_backend, :secure_random,
-                    :cors_plug
+                    :cors_plug, :csvlixir
                    ]]
   end
 
@@ -47,6 +47,7 @@ defmodule DraftServer.Mixfile do
       {:rollbax, "~> 0.5"},
       {:logger_file_backend, "0.0.4"},
       {:secure_random, "~> 0.2"}, # For Sentinel
+      {:csvlixir, "~> 2.0"},
       {:cors_plug, "~> 1.1"},
    ]
   end
