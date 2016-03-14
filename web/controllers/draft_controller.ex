@@ -75,7 +75,7 @@ defmodule DraftServer.DraftController do
   end
 
   @mock_data (
-    "data/players.json"
+    "data/generated.json"
     |> File.read!
     |> Poison.decode!
   )
