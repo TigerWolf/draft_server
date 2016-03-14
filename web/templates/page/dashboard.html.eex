@@ -165,10 +165,10 @@
   }
 
   class User {
-    constructor(id, name, image) {
+    constructor(id, name, turn) {
       this.id = id;
       this.name = name;
-      this.image = image;
+      this.turn = turn;
     }
   }
 
@@ -206,8 +206,10 @@
   function getUsers(){
     $.getJSON( tld + "the_users", function( data ) {
       $.each( data["data"], function( key, val ) {
-        users.push(new User(val.id, val.email));
+        users.push(new User(val.id, val.email, val.turn));
       });
+
+      users = users.sort(function(a, b) {return a.turn - b.turn})
 
       var key_html = '<div class="col s1"><span class="user_name">KEY</span> \
       <div class="player-card position-1"><div class="info"> <div class="player_name">MIDFIELD</div></div></div><div class="clear-both"></div>\
