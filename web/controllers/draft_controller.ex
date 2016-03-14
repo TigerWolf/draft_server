@@ -6,17 +6,28 @@ defmodule DraftServer.DraftController do
   plug :scrub_params, "draft" when action in [:create, :update]
 
   # plug Guardian.Plug.EnsureAuthenticated, handler: __MODULE__, typ: "token"
-  plug Guardian.Plug.EnsureAuthenticated, [handler: __MODULE__, typ: "token"] when action in [:create, :update, :delete]
+  plug Guardian.Plug.EnsureAuthenticated, [handler: __MODULE__, typ: "token"] when action in [:create, :update, :delete, :me]
 
   def index(conn, _params) do
     drafts = Repo.all(Draft)
     render(conn, "index.json", drafts: drafts)
   end
 
+  def me(conn, _params) do
+    current_user = Guardian.Plug.current_resource(conn)
+    user_id = current_user.id
+    drafts = Repo.all(
+          from d in Draft,
+            where: d.user_id == ^user_id,
+            order_by: [desc: d.inserted_at],
+            select: d
+        )
+    render(conn, "index.json", drafts: drafts)
+  end
+
   def create(conn, %{"draft" => draft_params}) do
 
     current_user = Guardian.Plug.current_resource(conn)
-    IO.puts current_user.id
     draft_params = Map.put(draft_params, "user_id", current_user.id)
 
     changeset = Draft.changeset(%Draft{}, draft_params)
