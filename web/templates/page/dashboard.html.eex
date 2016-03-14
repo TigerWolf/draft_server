@@ -136,19 +136,19 @@
     }
 
     .position-1{
-      background-color: #b847b8;
+      background-color: #fea3aa;
     }
 
     .position-2{
-      background-color: #47b8b2;
+      background-color: #f8b88b;
     }
 
     .position-3{
-      background-color: #85b847;
+      background-color: #faf884;
     }
 
     .position-4{
-      background-color: #b87a47;
+      background-color: #baed91;
     }
 
   </style>
@@ -156,10 +156,11 @@
   "use strict";
 
   class Player {
-    constructor(id, name, image, position) {
+    constructor(id, name, image, positions) {
       this.id = id;
       this.name = name;
       this.image = image;
+      this.positions = positions;
     }
   }
 
@@ -173,9 +174,9 @@
 
   var players = [];
   var users = [];
+  // var tld = "http://localhost:4000/api/v1/"
   var tld = "http://direct.challengecup.club:8080/api/v1/"
-  var tld2 = "http://localhost:4000/api/v1/"
-  var tld2 = "http://192.168.1.107:4000/api/v1/"
+
 
   // var tld = "//api/v1/"
 
@@ -191,9 +192,9 @@
   function startLoad() {
     players = []
     users = []
-    $.getJSON( tld2 + "drafts/players", function( data ) {
-      $.each( data["lists"], function( key, val ) {
-        players.push(new Player(val["player"]["playerId"], val["player"]["givenName"] + " " + val["player"]["surname"], val["player"]["photoURL"]));
+    $.getJSON( tld + "drafts/players", function( data ) {
+      $.each( data, function( key, val ) {
+        players.push(new Player(val["playerId"], val["givenName"] + " " + val["surname"], val["photoURL"], val["positions"]));
       });
 
       getUsers();
@@ -208,8 +209,16 @@
         users.push(new User(val.id, val.email));
       });
 
+      var key_html = '<div class="col s1"><span class="user_name">KEY</span> \
+      <div class="player-card position-1"><div class="info"> <div class="player_name">MIDFIELD</div></div></div><div class="clear-both"></div>\
+      <div class="player-card position-2"><div class="info"> <div class="player_name">DEFENDER</div></div></div><div class="clear-both"></div>\
+      <div class="player-card position-3"><div class="info"> <div class="player_name">RUCK</div></div></div><div class="clear-both"></div>\
+      <div class="player-card position-4"><div class="info"> <div class="player_name">FORWARD</div></div></div><div class="clear-both"></div>\
+  </div>';
+
       $('.content .row').html("");
-      $('.content .row').html('<div class="col s1">&nbsp;</div>');
+      // $('.content .row').html('<div class="col s1">&nbsp;</div>');
+      $('.content .row').html(key_html);
       for (var i = 0; i < users.length; i++) {
         var user = users[i];
         /*var size = Math.round(12/users.length);*/
@@ -248,9 +257,29 @@
         var player_name_s = found_player.name.split( " ") //, "<br>" )
         var min = 1;
         var max = 6;
-        var random_n = Math.round(Math.random() * (max - min) + min);
-        random_n = 3;
-        var context = {image: found_player.image, player_name: player_name_s[0], last_name: player_name_s[1], user: found_user.name, position: val.position, positon_number: random_n};
+        // var random_n = Math.round(Math.random() * (max - min) + min);
+        // if
+        var position_color = 4;
+        switch(found_player.positions[0]) {
+          case "MID":
+              position_color = 1;
+              break;
+          case "DEF":
+              position_color = 2;
+              break;
+          case "RUC":
+              position_color = 3;
+              break;
+          case "FWD":
+              position_color = 4;
+              break;
+          default:
+            position_color = 4;
+        }
+
+// debugger;
+        // random_n = 3;
+        var context = {image: found_player.image, player_name: player_name_s[0], last_name: player_name_s[1], user: found_user.name, position: val.position, positon_number: position_color};
         var html    = template(context);
         $('.content .row .player-' + found_user.id).append(html);
       });
