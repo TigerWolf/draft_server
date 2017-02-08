@@ -14,3 +14,7 @@
  * Add game scoring
 
  * Notification on the phone where you need to pic
+
+## BUGS
+
+ * Cannot save empty position

@@ -1,5 +1,7 @@
 defmodule DraftServer.User do
-  use Ecto.Model
+  # use Ecto
+  # use Ecto.Schema
+  use DraftServer.Web, :model
 
   schema "users" do
     field  :username,                    :string

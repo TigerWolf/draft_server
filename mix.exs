@@ -9,8 +9,8 @@ defmodule DraftServer.Mixfile do
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     aliases: aliases,
-     deps: deps]
+     aliases: aliases(),
+     deps: deps()]
   end
 
   # Configuration for the OTP application.
@@ -21,7 +21,7 @@ defmodule DraftServer.Mixfile do
      applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
                     :phoenix_ecto, :postgrex, :guardian, :sentinel,
                     :rollbax, :logger_file_backend, :secure_random,
-                    :cors_plug, :csvlixir
+                    :cors_plug, :csvlixir, :phoenix_pubsub
                    ]]
   end
 
@@ -34,15 +34,17 @@ defmodule DraftServer.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.1.4"},
+      {:phoenix, "~> 1.2.0"},
+      {:phoenix_pubsub, "~> 1.0"},
       {:postgrex, ">= 0.0.0"},
-      {:phoenix_ecto, "~> 2.0"},
+      {:phoenix_ecto, "~> 3.0"},
       {:phoenix_html, "~> 2.4"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.9"},
       {:cowboy, "~> 1.0"},
-      {:guardian, "~> 0.10.0"},
-      {:sentinel, "~> 0.0.4", github: "TigerWolf/sentinel", ref: "1b05ad719d229cf6f6423823ffa5fd73366eaf2b"},
+      {:guardian, "~> 0.14.2"},
+      # {:sentinel, "~> 0.0.4", github: "TigerWolf/sentinel", ref: "1b05ad719d229cf6f6423823ffa5fd73366eaf2b"},
+      {:sentinel, "~> 1.0.2"},
       {:exrm, "1.0.2"},
       {:rollbax, "~> 0.5"},
       {:logger_file_backend, "0.0.4"},

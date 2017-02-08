@@ -38,6 +38,9 @@ defmodule DraftServer.DraftController do
         |> put_status(:created)
         |> put_resp_header("location", draft_path(conn, :show, draft))
         |> render("show.json", draft: draft)
+        # ensure all other clients update their list
+        DraftServer.Endpoint.broadcast "rooms:lobby", "new:msg", %{user: "#{current_user.email}", body: "player_picked #{draft_params["player_id"]}"}
+        DraftServer.Endpoint.broadcast "rooms:lobby", "new:msg", %{user: "SYSTEM", body: "refresh_list"}
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)

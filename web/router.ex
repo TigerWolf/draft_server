@@ -31,7 +31,7 @@ defmodule DraftServer.Router do
 
   scope "/api/v1" do
     pipe_through [:api]
-    Sentinel.mount
+    Sentinel.mount_api
   end
 
   scope "/", DraftServer do
