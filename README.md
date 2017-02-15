@@ -18,3 +18,4 @@
 ## BUGS
 
  * Cannot save empty position
+ * Fix error when api/v1/drafts/100 is is invalid (missing row)
