@@ -13,9 +13,10 @@ use Mix.Config
 # which you typically run after static files are built.
 config :draft_server, DraftServer.Endpoint,
   http: [port: {:system, "PORT"}],
-  url: [host: "challengecup.club", port: 8080],
+  url: [host: "challengecup.club:8080", port: 8080],
   cache_static_manifest: "priv/static/manifest.json",
-  server: true
+  server: true,
+  check_origin: false
 
   config :rollbax,
     access_token: "0986ff39d4e04f099536b07900347a32",
