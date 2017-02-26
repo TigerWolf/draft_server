@@ -99,7 +99,7 @@ defmodule DraftServer.DraftController do
   end
 
   require IEx
-  def players_generator(conn, _params) do
+  def players_generator2(conn, _params) do
     raw_players =
       File.read!("data/players.json")
       |> Poison.decode!
@@ -182,6 +182,59 @@ defmodule DraftServer.DraftController do
     |> json(players_list)
   end
 
+  def players_generator(conn, _params) do
+    fantasy_players =
+      File.read!("data/fantasy.json")
+      |> Poison.decode!
+
+    squads =
+      File.read!("data/squads.json")
+      |> Poison.decode!
+
+    position_descriptions = %{
+      1 => "Defender",
+      2 => "Mid",
+      3 => "Ruck",
+      4 => "Forward"
+    }
+
+    players_list = Enum.map(fantasy_players, fn x ->
+
+      IO.puts inspect(x["first_name"])
+      IO.puts inspect(x["last_name"])
+      # IO.puts inspect(player_id)
+      # IO.puts inspect(positions)
+
+      [team] = Enum.filter(squads, fn(squad) -> squad["id"] == x["squad_id"] end)
+
+      # positions = x["positions"]
+
+      positions = Enum.map(x["positions"], fn(position) -> position_descriptions[position] end)
+
+      %{
+        "givenName" => x["first_name"],
+        "surname" => x["last_name"],
+        "photoURL" => "https://fantasy.afl.com.au/assets/media/players/afl/#{x["id"]}_50.png",
+        # "jumper" => x["player"]["jumper"],
+        "playerId" => x["id"],
+        "teamId" => x["squad_id"],
+        "teamAbbr" => team["short_name"],
+        "teamName" => team["name"],
+        # "teamNickname" => x["team"]["teamNickname"],
+        # # "new_player_id" => player_name,
+        "positions" => positions
+      }
+
+    end )
+
+    # csv = CSVLixir.write(players_list) |> Enum.join #Enum.each(&IO.write/1)
+
+    conn
+    |> put_status(:ok)
+    # |> text(csv)
+    |> json(players_list)
+
+  end
 
   def dashboard(conn, _params) do
 
