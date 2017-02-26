@@ -22,7 +22,8 @@ defmodule DraftServer.Router do
     get "/the_users", UserController, :index
 
     get "/drafts/players_generator", DraftController, :players_generator
-    get "/drafts/players", DraftController, :players
+    # get "/drafts/players", DraftController, :players
+    get "/drafts/players", DraftController, :players_generator
 
     get "/drafts/me", DraftController, :me
 
@@ -40,6 +41,7 @@ defmodule DraftServer.Router do
     get "/", PageController, :index
     get "/dashboard", PageController, :dashboard
     resources "/users", UserController # TEMP
+    Sentinel.mount_html
   end
 
   # Other scopes may use custom stacks.

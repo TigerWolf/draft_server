@@ -200,8 +200,8 @@ defmodule DraftServer.DraftController do
 
     players_list = Enum.map(fantasy_players, fn x ->
 
-      IO.puts inspect(x["first_name"])
-      IO.puts inspect(x["last_name"])
+      # IO.puts inspect(x["first_name"])
+      # IO.puts inspect(x["last_name"])
       # IO.puts inspect(player_id)
       # IO.puts inspect(positions)
 
@@ -214,7 +214,7 @@ defmodule DraftServer.DraftController do
       %{
         "givenName" => x["first_name"],
         "surname" => x["last_name"],
-        "photoURL" => "https://fantasy.afl.com.au/assets/media/players/afl/#{x["id"]}_50.png",
+        "photoURL" => "https://fantasy.afl.com.au/assets/media/players/afl/#{x["id"]}_100.png",
         # "jumper" => x["player"]["jumper"],
         "playerId" => x["id"],
         "teamId" => x["squad_id"],
