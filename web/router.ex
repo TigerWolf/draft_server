@@ -60,8 +60,6 @@ defmodule DraftServer.Router do
     Sentinel.mount_ueberauth
   end
 
-
-
   scope "/" do
     pipe_through :browser
     Sentinel.mount_html

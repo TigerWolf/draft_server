@@ -56,8 +56,8 @@ config :sentinel,
   # auth_handler: Sentinel.AuthHandler,
   layout_view: DraftServer.Layout, # your layout
   layout_view: :app,
-  user_view: Sentinel.UserView,
-  error_view: Sentinel.ErrorView,
+  user_view: DraftServer.UserView,
+  error_view: DraftServer.ErrorView,
   router: DraftServer.Router , # your router
   endpoint: DraftServer.Endpoint, # your endpoint
   invitable: true,
