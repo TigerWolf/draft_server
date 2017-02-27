@@ -55,7 +55,7 @@ config :sentinel,
   ecto_repos: [DraftServer.Repo],
   # auth_handler: Sentinel.AuthHandler,
   layout_view: DraftServer.Layout, # your layout
-  layout_view: :app,
+  # layout_view: :app,
   user_view: DraftServer.UserView,
   error_view: DraftServer.ErrorView,
   router: DraftServer.Router , # your router
