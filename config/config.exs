@@ -14,6 +14,9 @@ config :draft_server, DraftServer.Endpoint,
   pubsub: [name: DraftServer.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
+config :draft_server, ecto_repos: [DraftServer.Repo]
+
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
@@ -32,18 +35,51 @@ config :guardian, Guardian,
 # config :guardian_db, GuardianDb,
 #   repo: MyApp.Repo
 
+# config :sentinel,
+#   app_name: "Test App",
+#   user_model: DraftServer.User,
+#   email_sender: "test@example.com",
+#   crypto_provider: Comeonin.Bcrypt,
+#   auth_handler: Sentinel.AuthHandler, #optional
+#   repo: DraftServer.Repo,
+#   confirmable: :false, # possible options {:false, :required, :optional},optional config
+#   endpoint: DraftServer.Endpoint,
+#   router: DraftServer.Router
+
 config :sentinel,
   app_name: "Test App",
-  user_model: DraftServer.User,
-  email_sender: "test@example.com",
+  user_model: DraftServer.User, # should be your generated model
+  send_address: "test@example.com",
   crypto_provider: Comeonin.Bcrypt,
-  auth_handler: Sentinel.AuthHandler, #optional
   repo: DraftServer.Repo,
-  confirmable: :false, # possible options {:false, :required, :optional},optional config
-  endpoint: DraftServer.Endpoint,
-  router: DraftServer.Router
+  ecto_repos: [DraftServer.Repo],
+  # auth_handler: Sentinel.AuthHandler,
+  layout_view: DraftServer.Layout, # your layout
+  layout_view: :app,
+  user_view: Sentinel.UserView,
+  error_view: Sentinel.ErrorView,
+  router: DraftServer.Router , # your router
+  endpoint: DraftServer.Endpoint, # your endpoint
+  invitable: true,
+  invitation_registration_url: "http://localhost:4000", # for api usage only
+  confirmable: :optional,
+  confirmable_redirect_url: "http://localhost:4000", # for api usage only
+  password_reset_url: "http://localhost:4000", # for api usage only
+  send_emails: true
 
+config :ueberauth, Ueberauth,
+  providers: [
+    identity: {
+      Ueberauth.Strategy.Identity,
+      [
+        param_nesting: "user",
+        callback_methods: ["POST"]
+      ]
+    },
+  ]
 
+  config :sentinel, Sentinel.Mailer,
+    adapter: Bamboo.TestAdapter
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

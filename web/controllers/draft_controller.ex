@@ -8,6 +8,12 @@ defmodule DraftServer.DraftController do
   # plug Guardian.Plug.EnsureAuthenticated, handler: __MODULE__, typ: "token"
   plug Guardian.Plug.EnsureAuthenticated, [handler: __MODULE__, typ: "token"] when action in [:create, :update, :delete, :me]
 
+  @mock_data (
+    "data/generated.json"
+    |> File.read!
+    |> Poison.decode!
+  )
+
   def index(conn, _params) do
     drafts = Repo.all(Draft)
     render(conn, "index.json", drafts: drafts)
@@ -39,7 +45,14 @@ defmodule DraftServer.DraftController do
         |> put_resp_header("location", draft_path(conn, :show, draft))
         |> render("show.json", draft: draft)
         # ensure all other clients update their list
-        DraftServer.Endpoint.broadcast "rooms:lobby", "new:msg", %{user: "#{current_user.email}", body: "player_picked #{draft_params["player_id"]}"}
+        # TODO: Add next player in list here as new item
+        # DraftServer.Endpoint.broadcast "rooms:lobby", "new:msg", %{user: "#{current_user.username}", body: "player_picked #{draft_params["player_id"]}"}
+
+
+        player = Enum.filter(@mock_data, fn x -> x["playerId"] == draft_params["player_id"] end) |> List.first
+
+        DraftServer.Endpoint.broadcast "rooms:lobby", "new:msg", %{user: "#{current_user.username}", body: "notification Player #{current_user.username} picked #{player["givenName"]} #{player["surname"]}"}
+        # TODO: save this message to database
         DraftServer.Endpoint.broadcast "rooms:lobby", "new:msg", %{user: "SYSTEM", body: "refresh_list"}
       {:error, changeset} ->
         conn
@@ -47,6 +60,21 @@ defmodule DraftServer.DraftController do
         |> render(DraftServer.ChangesetView, "error.json", changeset: changeset)
     end
   end
+
+  def message(conn, _) do
+    conn
+    |> put_status(:ok)
+    |> json(%{message: "PLACEHOLDER: This message will show last pick and who is next."})
+  end
+
+  # def next_player(user)
+  #   if round.even?
+  #     next_turn = user.turn + 1
+  #   else
+  #     next_turn = user.turn - 1
+  #   end
+  #   next_user = Repo.find(User.where(turn: next_turn))
+  # end
 
   def show(conn, %{"id" => id}) do
     draft = Repo.get!(Draft, id)
@@ -76,12 +104,6 @@ defmodule DraftServer.DraftController do
 
     send_resp(conn, :no_content, "")
   end
-
-  @mock_data (
-    "data/generated.json"
-    |> File.read!
-    |> Poison.decode!
-  )
 
   def players(conn, _params) do
     conn

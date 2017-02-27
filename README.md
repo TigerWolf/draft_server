@@ -1,5 +1,10 @@
 # DraftServer
 
+Try passport for login etc
+ * https://github.com/opendrops/passport
+Maybe Coherence
+ * https://github.com/smpallen99/coherence
+
 # TODO
 
  * Colors for positions on screen ( 6 positions )

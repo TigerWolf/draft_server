@@ -44,7 +44,7 @@ defmodule DraftServer.Mixfile do
       {:cowboy, "~> 1.0"},
       {:guardian, "~> 0.14.2"},
       # {:sentinel, "~> 0.0.4", github: "TigerWolf/sentinel", ref: "1b05ad719d229cf6f6423823ffa5fd73366eaf2b"},
-      {:sentinel, "~> 1.0.2"},
+      {:sentinel, "~> 2.0.1"},
       {:distillery, "~> 1.0"},
       {:rollbax, "~> 0.5"},
       {:logger_file_backend, "0.0.4"},
