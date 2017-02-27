@@ -22,8 +22,8 @@ defmodule DraftServer.Router do
     get "/the_users", UserController, :index
 
     get "/drafts/players_generator", DraftController, :players_generator
-    # get "/drafts/players", DraftController, :players
-    get "/drafts/players", DraftController, :players_generator
+    get "/drafts/players", DraftController, :players
+    # get "/drafts/players", DraftController, :players_generator
     get "/drafts/message", DraftController, :message
 
     get "/drafts/me", DraftController, :me
