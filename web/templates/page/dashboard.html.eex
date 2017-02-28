@@ -212,8 +212,8 @@
       users = users.sort(function(a, b) {return a.turn - b.turn})
 
       var key_html = '<div class="col s1"><span class="user_name">KEY</span> \
-      <div class="player-card position-1"><div class="info"> <div class="player_name">MIDFIELD</div></div></div><div class="clear-both"></div>\
-      <div class="player-card position-2"><div class="info"> <div class="player_name">DEFENDER</div></div></div><div class="clear-both"></div>\
+      <div class="player-card position-1"><div class="info"> <div class="player_name">Midfielder</div></div></div><div class="clear-both"></div>\
+      <div class="player-card position-2"><div class="info"> <div class="player_name">Defender</div></div></div><div class="clear-both"></div>\
       <div class="player-card position-3"><div class="info"> <div class="player_name">RUCK</div></div></div><div class="clear-both"></div>\
       <div class="player-card position-4"><div class="info"> <div class="player_name">FORWARD</div></div></div><div class="clear-both"></div>\
   </div>';
@@ -263,16 +263,16 @@
         // if
         var position_color = 4;
         switch(found_player.positions[0]) {
-          case "MID":
+          case "Mid":
               position_color = 1;
               break;
-          case "DEF":
+          case "Defender":
               position_color = 2;
               break;
-          case "RUC":
+          case "Ruck":
               position_color = 3;
               break;
-          case "FWD":
+          case "Forward":
               position_color = 4;
               break;
           default:
