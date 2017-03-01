@@ -70,7 +70,7 @@ defmodule DraftServer.Router do
 
     get "/", PageController, :index
     get "/dashboard", PageController, :dashboard
-    # resources "/users", UserController # TEMP
+    resources "/users", UserController # Page to edit accounts - needs work
 
   end
 

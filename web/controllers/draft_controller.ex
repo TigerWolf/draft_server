@@ -35,6 +35,8 @@ defmodule DraftServer.DraftController do
 
     current_user = Guardian.Plug.current_resource(conn)
     draft_params = Map.put(draft_params, "user_id", current_user.id)
+    draft_params = Map.put(draft_params, "round", 1)
+    draft_params = Map.put(draft_params, "competition_id", 1)
 
     changeset = Draft.changeset(%Draft{}, draft_params)
 
@@ -50,8 +52,12 @@ defmodule DraftServer.DraftController do
 
 
         player = Enum.filter(@mock_data, fn x -> x["playerId"] == draft_params["player_id"] end) |> List.first
-
-        DraftServer.Endpoint.broadcast "rooms:lobby", "new:msg", %{user: "#{current_user.username}", body: "notification Player #{current_user.username} picked #{player["givenName"]} #{player["surname"]}"}
+        next_pick = next_pick(current_user)
+        message = "notification #{current_user.username} picked #{player["givenName"]} #{player["surname"]}. Next pick: #{next_pick}"
+        # TODO - check for failure
+        message_changeset = DraftServer.Message.changeset(%DraftServer.Message{}, %{text: message, user: "#{current_user.username}"})
+        Repo.insert(message_changeset)
+        DraftServer.Endpoint.broadcast "rooms:lobby", "new:msg", %{user: "#{current_user.username}", body: message}
         # TODO: save this message to database
         DraftServer.Endpoint.broadcast "rooms:lobby", "new:msg", %{user: "SYSTEM", body: "refresh_list"}
       {:error, changeset} ->
@@ -62,9 +68,52 @@ defmodule DraftServer.DraftController do
   end
 
   def message(conn, _) do
+    message = Repo.one(
+          from m in DraftServer.Message,
+            order_by: [desc: m.inserted_at],
+            limit: 1
+        )
+
     conn
     |> put_status(:ok)
-    |> json(%{message: "PLACEHOLDER: This message will show last pick and who is next."})
+    |> json(%{message: "#{message.text}"})
+  end
+
+  def next_pick(user) do
+    competition = Repo.one(
+        from c in DraftServer.Competition,
+          where: c.id == ^1,
+          select: c
+      )
+    current_turn = user.turn
+    next_turn = current_turn
+    require Integer
+    IO.puts current_turn
+    if Integer.is_odd(competition.round) do
+      IO.puts " ------------ ODD"
+      next_turn = current_turn + 1
+    else
+      IO.puts " ------------ EVEN"
+      next_turn = current_turn - 1
+    end
+    IO.puts next_turn
+    next_user = Repo.one(
+          from u in DraftServer.User,
+            where: u.turn == ^next_turn,
+            select: u
+        )
+    if next_user == nil do
+      # increment next round
+      next_round = competition.round + 1
+      changeset = DraftServer.Competition.changeset(competition, %{round: next_round})
+      Repo.update(changeset)
+      next_user = user # This could be done differently - maybe recoursively?
+    end
+    # query = from(p in DraftServer.User, [where: p.id == next_turn])
+    # query = from p in DraftServer.User, where: p.id == ^next_turn
+
+    # query.first.username
+    "#{next_user.username}"
   end
 
   # def next_player(user)
