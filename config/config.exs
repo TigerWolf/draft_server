@@ -53,9 +53,8 @@ config :sentinel,
   crypto_provider: Comeonin.Bcrypt,
   repo: DraftServer.Repo,
   ecto_repos: [DraftServer.Repo],
-  # auth_handler: Sentinel.AuthHandler,
+  auth_handler: Sentinel.AuthHandler,
   layout_view: DraftServer.LayoutView, # your layout
-  # layout_view: :app,
   user_view: DraftServer.UserView,
   error_view: DraftServer.ErrorView,
   router: DraftServer.Router , # your router

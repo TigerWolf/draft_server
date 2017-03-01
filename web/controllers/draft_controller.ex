@@ -35,6 +35,8 @@ defmodule DraftServer.DraftController do
 
     current_user = Guardian.Plug.current_resource(conn)
     draft_params = Map.put(draft_params, "user_id", current_user.id)
+    draft_params = Map.put(draft_params, "round", 1)
+    draft_params = Map.put(draft_params, "competition_id", 1)
 
     changeset = Draft.changeset(%Draft{}, draft_params)
 
@@ -50,8 +52,12 @@ defmodule DraftServer.DraftController do
 
 
         player = Enum.filter(@mock_data, fn x -> x["playerId"] == draft_params["player_id"] end) |> List.first
-
-        DraftServer.Endpoint.broadcast "rooms:lobby", "new:msg", %{user: "#{current_user.username}", body: "notification Player #{current_user.username} picked #{player["givenName"]} #{player["surname"]}"}
+        next_pick = next_pick(current_user)
+        message = "notification #{current_user.username} picked #{player["givenName"]} #{player["surname"]}. Next pick: #{next_pick}"
+        # TODO - check for failure
+        message_changeset = DraftServer.Message.changeset(%DraftServer.Message{}, %{text: message, user: "#{current_user.username}"})
+        Repo.insert(message_changeset)
+        DraftServer.Endpoint.broadcast "rooms:lobby", "new:msg", %{user: "#{current_user.username}", body: message}
         # TODO: save this message to database
         DraftServer.Endpoint.broadcast "rooms:lobby", "new:msg", %{user: "SYSTEM", body: "refresh_list"}
       {:error, changeset} ->
@@ -62,19 +68,50 @@ defmodule DraftServer.DraftController do
   end
 
   def message(conn, _) do
+    message = Repo.one(
+      from m in DraftServer.Message,
+        order_by: [desc: m.inserted_at],
+        limit: 1
+    )
+
     conn
     |> put_status(:ok)
-    |> json(%{message: "PLACEHOLDER: This message will show last pick and who is next."})
+    |> json(%{message: "#{message.text}"})
   end
 
-  # def next_player(user)
-  #   if round.even?
-  #     next_turn = user.turn + 1
-  #   else
-  #     next_turn = user.turn - 1
-  #   end
-  #   next_user = Repo.find(User.where(turn: next_turn))
-  # end
+  def next_pick(user) do
+    competition = Repo.one(
+        from c in DraftServer.Competition,
+          where: c.id == ^1,
+          select: c
+      )
+    current_turn = user.turn
+    next_turn = current_turn
+    require Integer
+    IO.puts current_turn
+    if Integer.is_odd(competition.round) do
+      IO.puts " ------------ ODD"
+      next_turn = current_turn + 1
+    else
+      IO.puts " ------------ EVEN"
+      next_turn = current_turn - 1
+    end
+    IO.puts next_turn
+    next_user = Repo.one(
+          from u in DraftServer.User,
+            where: u.turn == ^next_turn,
+            select: u
+        )
+    if next_user == nil do
+      # increment next round
+      next_round = competition.round + 1
+      changeset = DraftServer.Competition.changeset(competition, %{round: next_round})
+      Repo.update(changeset)
+      next_user = user # This could be done differently - maybe recoursively?
+    end
+
+    "#{next_user.username}"
+  end
 
   def show(conn, %{"id" => id}) do
     draft = Repo.get!(Draft, id)
@@ -126,27 +163,16 @@ defmodule DraftServer.DraftController do
       File.read!("data/players.json")
       |> Poison.decode!
 
-    # fantasy_players =
-    #   File.read!("data/fantasy.json")
-    #   |> Poison.decode!
-
     ultimate_positions =
       CSVLixir.read("data/ultimate.csv") |> Enum.to_list
 
     lists = raw_players["lists"]
     players_list = Enum.map(lists, fn x ->
       player_name = x["player"]["givenName"] <> " " <> x["player"]["surname"]
-      # |> List.first
-      # |> List.first
-#
+
       position = Enum.filter(ultimate_positions, fn x -> Enum.at(x, 0) <> " " <> Enum.at(x, 1) == player_name end)
       |> List.first
 
-      # positions = position
-
-      # IEx.pry
-
-      # if position != nil do
       postions = case position do
         nil -> ""
         _ ->
@@ -169,20 +195,6 @@ defmodule DraftServer.DraftController do
         3 => "Ruck",
         4 => "Forward"
       }
-
-      # IO.puts inspect(x["player"]["givenName"])
-      # IO.puts inspect(x["player"]["surname"])
-      # IO.puts inspect(player_id)
-      # IO.puts inspect(positions)
-      # if positions != nil do
-      # fantasy_replaced_positions = Enum.map(positions, fn x ->
-      #
-      #   # position_id = Enum.filter(position_descriptions, fn y -> x == y end)
-      #   position_descriptions[x]
-      #   # IEx.pry
-      #   # String.replace(x, position_id, position_descriptions[position_id])
-      # end)
-    # end
 
       %{
       "givenName" => x["player"]["givenName"],
@@ -222,14 +234,7 @@ defmodule DraftServer.DraftController do
 
     players_list = Enum.map(fantasy_players, fn x ->
 
-      # IO.puts inspect(x["first_name"])
-      # IO.puts inspect(x["last_name"])
-      # IO.puts inspect(player_id)
-      # IO.puts inspect(positions)
-
       [team] = Enum.filter(squads, fn(squad) -> squad["id"] == x["squad_id"] end)
-
-      # positions = x["positions"]
 
       positions = Enum.map(x["positions"], fn(position) -> position_descriptions[position] end)
 
@@ -249,11 +254,8 @@ defmodule DraftServer.DraftController do
 
     end )
 
-    # csv = CSVLixir.write(players_list) |> Enum.join #Enum.each(&IO.write/1)
-
     conn
     |> put_status(:ok)
-    # |> text(csv)
     |> json(players_list)
 
   end
