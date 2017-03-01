@@ -31,6 +31,7 @@ environment :prod do
   set include_erts: true
   set include_src: false
   set cookie: :":qEIGnf6AF^Rtmh>WzNrp$x,^.624V1/=F~$8^$r?WSlSFK{O2n%$`tFMcjT`<$}"
+  set plugins: [DraftServer.PhoenixDigestTask]
 end
 
 # You may define one or more releases in this file.
@@ -41,4 +42,3 @@ end
 release :draft_server do
   set version: current_version(:draft_server)
 end
-
