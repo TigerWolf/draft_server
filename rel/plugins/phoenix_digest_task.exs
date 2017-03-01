@@ -35,8 +35,8 @@ defmodule DraftServer.PhoenixDigestTask do
 end
 
 
-environment :prod do
-  set plugins: [DraftServer.PhoenixDigestTask]
-  set include_erts: true
-  set include_src: false
-end
+# environment :prod do
+#   set plugins: [DraftServer.PhoenixDigestTask]
+#   set include_erts: true
+#   set include_src: false
+# end
