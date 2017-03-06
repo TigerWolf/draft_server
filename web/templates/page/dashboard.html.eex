@@ -201,12 +201,16 @@
       getDrafted();
     });
 
+    $.getJSON( tld + "drafts/message", function( data ) {
+      $('.message').html(data.message);
+    });
+
   };
 
   function getUsers(){
     $.getJSON( tld + "the_users", function( data ) {
       $.each( data["data"], function( key, val ) {
-        users.push(new User(val.id, val.email, val.turn));
+        users.push(new User(val.id, val.username, val.turn));
       });
 
       users = users.sort(function(a, b) {return a.turn - b.turn})
@@ -214,8 +218,8 @@
       var key_html = '<div class="col s1"><span class="user_name">KEY</span> \
       <div class="player-card position-1"><div class="info"> <div class="player_name">Midfielder</div></div></div><div class="clear-both"></div>\
       <div class="player-card position-2"><div class="info"> <div class="player_name">Defender</div></div></div><div class="clear-both"></div>\
-      <div class="player-card position-3"><div class="info"> <div class="player_name">RUCK</div></div></div><div class="clear-both"></div>\
-      <div class="player-card position-4"><div class="info"> <div class="player_name">FORWARD</div></div></div><div class="clear-both"></div>\
+      <div class="player-card position-3"><div class="info"> <div class="player_name">Ruck</div></div></div><div class="clear-both"></div>\
+      <div class="player-card position-4"><div class="info"> <div class="player_name">Forward</div></div></div><div class="clear-both"></div>\
   </div>';
 
       $('.content .row').html("");
@@ -262,6 +266,7 @@
         // var random_n = Math.round(Math.random() * (max - min) + min);
         // if
         var position_color = 4;
+
         switch(found_player.positions[0]) {
           case "Mid":
               position_color = 1;
@@ -293,6 +298,7 @@
 </head>
 <body>
   <div class="content">
+    <div class="message" style="background-color:black; color: white; padding-left:30px">Loading...</div>
     <div class="row">
    </div>
   </div>

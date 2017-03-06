@@ -12,6 +12,7 @@ defmodule DraftServer.UserView do
   def render("user.json", %{user: user}) do
     %{id: user.id,
       email: user.email,
+      username: user.username,
       turn: user.turn
     }
   end
