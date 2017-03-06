@@ -198,7 +198,7 @@
       });
 
       getUsers();
-      getDrafted();
+
     });
 
     $.getJSON( tld + "drafts/message", function( data ) {
@@ -234,6 +234,8 @@
         }
         $('.content .row').append('<div class="col s'+size+' player-'+user.id+'"><span class="user_name">'+ user.name +'</span></div>');
       }
+
+      getDrafted();
 
     });
   };
@@ -299,7 +301,7 @@
 <body>
   <div class="content">
     <div class="message" style="background-color:black; color: white; padding-left:30px">Loading...</div>
-    <div class="row">
+    <div class="row">&nbsp;
    </div>
   </div>
 </body>
