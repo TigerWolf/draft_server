@@ -9,7 +9,11 @@ defmodule DraftServer.UserController do
   # plug Guardian.Plug.EnsureAuthenticated, handler: __MODULE__, typ: "token"
 
   def index(conn, _params) do
-    users = Repo.all(User)
+    # users = Repo.all(User)
+    users = Repo.all(
+          from u in User,
+          where: not is_nil(u.turn)
+    )
     render(conn, "index.json", users: users)
   end
 
